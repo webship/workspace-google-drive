@@ -106,11 +106,6 @@ test('Disconnect clears the token and leaves a line the next Connect can write a
   assert.ok(readSettingsRows(PLUGIN_FILE).some((r) => r.dotted === 'refresh_token'), 'still an editable row');
 });
 
-    return run.stdout.trim();
-  };
-  assert.match(load('workspaces:\n  - docs\n'), /google-drive-sync/);
-  assert.doesNotMatch(load('workspaces:\n  - docs\nplugins:\n  google-drive-sync:\n    enabled: false\n'), /google-drive-sync/);
-});
 
 test('the Google account setting is read, and Connect pre-selects it in the account chooser', () => {
   const { spawnSync } = require('child_process');
