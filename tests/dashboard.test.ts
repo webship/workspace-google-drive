@@ -106,8 +106,6 @@ test('Disconnect clears the token and leaves a line the next Connect can write a
   assert.ok(readSettingsRows(PLUGIN_FILE).some((r) => r.dotted === 'refresh_token'), 'still an editable row');
 });
 
-    fs.writeFileSync(path.join(dir, 'settings.yml'), settings);
-    const run = spawnSync('node', ['-e', "console.log(require('./plugin-loader').loadedPlugins.map((p) => p.name).join(','))"], { env: { ...process.env, WORKSPACE_CONFIG: dir }, cwd: path.join(__dirname, '..', '..'), encoding: 'utf8' });
     return run.stdout.trim();
   };
   assert.match(load('workspaces:\n  - docs\n'), /google-drive-sync/);
