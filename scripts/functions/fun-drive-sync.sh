@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Push a workspace folder to Google Drive. The work is in the @webship/workspace-google-drive package's
+# Push a workspace folder to Google Drive. The work is in the @webship.co/workspace-google-drive package's
 # cli.js (installed into core/workspace-app/node_modules by plugins.sh --require), which reads
 # plugin.google-drive-sync.settings.yml, the plugin's own settings file; the dashboard's Sync button runs this same command.
 
@@ -8,7 +8,7 @@ DRIVE_MCP_NAME="google-drive-workspace" ;
 
 function drive_node() {
   command -v node > /dev/null 2>&1 || { echo "node is not installed here. Run this from the dashboard, or install node." >&2 ; return 1 ; }
-  local pkg="${WORKSPACE_ROOT}/core/workspace-app/node_modules/@webship/workspace-google-drive";
+  local pkg="${WORKSPACE_ROOT}/core/workspace-app/node_modules/@webship.co/workspace-google-drive";
   [ -d "${pkg}/dist/src/lib" ] || { echo "The Google Drive plugin is not installed: bash core/scripts/plugins.sh --require github:webship/workspace-google-drive" >&2 ; return 1 ; }
   WORKSPACE_ROOT="${WORKSPACE_ROOT}" WORKSPACE_CONFIG="${WORKSPACE_CONFIG}" node "${pkg}/dist/src/lib/$1" "${@:2}" ;
 }

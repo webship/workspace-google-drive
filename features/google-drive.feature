@@ -9,4 +9,4 @@ Feature: The Google Drive plugin
   Scenario: The plugin is listed on the Plugins page
     Given I am on "/settings/plugins"
      Then I should see "Google Drive"
-      And I should see "@webship/workspace-google-drive"
+      And I should see "@webship.co/workspace-google-drive"

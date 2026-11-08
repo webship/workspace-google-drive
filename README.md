@@ -1,4 +1,4 @@
-# @webship/workspace-google-drive
+# @webship.co/workspace-google-drive
 
 Google Drive for the [Webship Workspace](https://github.com/webship/workspace) dashboard: a
 **Sync to Drive** button in the rail of the videos, audio, docs and specs workspaces (and **Sync

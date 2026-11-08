@@ -57,8 +57,8 @@ test('the plugin has its own settings file with every key, and settings.yml no l
 
 test('the plugin loads as a node module, with a folder only as the fallback', () => {
   const entry = loadedPlugins.find((p) => p.name === 'google-drive-sync');
-  assert.match(entry.source, /^module:@webship\/workspace-google-drive$/, `loaded as ${entry.source}`);
-  assert.match(require(APP + '/package.json').dependencies['@webship/workspace-google-drive'], /^github:webship\/workspace-google-drive/);
+  assert.match(entry.source, /^module:@webship\.co\/workspace-google-drive$/, `loaded as ${entry.source}`);
+  assert.match(require(APP + '/package.json').dependencies['@webship.co/workspace-google-drive'], /^github:webship\/workspace-google-drive/);
   const manifest = require('../../package.json');
   assert.strictEqual(manifest.main, 'dist/src/index.js');
   assert.strictEqual(manifest.workspacePlugin.settingsFile, PLUGIN_FILE);
