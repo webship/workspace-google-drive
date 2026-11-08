@@ -1,13 +1,24 @@
 {
-  "name": "@webship/workspace-google-drive",
-  "version": "2.0.0",
+  "name": "@webship.co/workspace-google-drive",
+  "version": "1.0.0-alpha1",
   "description": "Google Drive for Webship Workspace: a Sync to Drive button on the videos, audio, docs, specs and test workspaces, the command line behind it, a Google Drive MCP server for Claude Code, and the plugin's own settings file.",
   "main": "dist/src/index.js",
-  "private": true,
   "license": "ISC",
-  "repository": "github:webship/workspace-google-drive",
-  "bin": { "workspace-google-drive": "dist/src/lib/cli.js" },
-  "files": ["dist/src", "commands", "config", "features", "scripts", "README.md"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/webship/workspace-google-drive.git"
+  },
+  "bin": {
+    "workspace-google-drive": "dist/src/lib/cli.js"
+  },
+  "files": [
+    "dist/src",
+    "commands",
+    "config",
+    "features",
+    "scripts",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "prepare": "npm run build",
@@ -21,15 +32,37 @@
     "settingsTemplate": "config/plugin.google-drive-sync.settings.yml",
     "legacySettingsKey": "google_drive",
     "workspaces": "videos,audio,docs,specs,test",
-    "commands": { "workspaces": ["videos", "audio", "docs", "specs", "test"], "files": ["commands/cmd-tools-google-drive-sync.sh"] },
-    "scripts": { "functions": ["scripts/functions/fun-drive-sync.sh"] },
-    "features": ["features/google-drive.feature"]
+    "commands": {
+      "workspaces": [
+        "videos",
+        "audio",
+        "docs",
+        "specs",
+        "test"
+      ],
+      "files": [
+        "commands/cmd-tools-google-drive-sync.sh"
+      ]
+    },
+    "scripts": {
+      "functions": [
+        "scripts/functions/fun-drive-sync.sh"
+      ]
+    },
+    "features": [
+      "features/google-drive.feature"
+    ]
   },
-  "dependencies": { "js-yaml": "^4.1.0" },
+  "dependencies": {
+    "js-yaml": "^4.1.0"
+  },
   "devDependencies": {
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^24.0.0",
-    "@webship/workspace-plugin-api": "github:webship/workspace-plugin-api#1.0.x",
+    "@webship.co/workspace-plugin-api": "^1.0.0-alpha1",
     "typescript": "^5.9.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
