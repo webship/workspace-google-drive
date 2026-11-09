@@ -1,6 +1,6 @@
 {
   "name": "@webship.co/workspace-google-drive",
-  "version": "1.0.0-beta1",
+  "version": "1.0.0-rc1",
   "description": "Google Drive for Webship Workspace: a Sync to Drive button on the videos, audio, docs, specs and test workspaces, the command line behind it, a Google Drive MCP server for Claude Code, and the plugin's own settings file.",
   "main": "dist/src/index.js",
   "license": "ISC",
@@ -59,7 +59,7 @@
   "devDependencies": {
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^24.0.0",
-    "@webship.co/workspace-plugin-api": "^1.0.0-beta1",
+    "@webship.co/workspace-plugin-api": "^1.0.0-rc1",
     "typescript": "^5.9.0"
   },
   "publishConfig": {
