@@ -20,6 +20,10 @@ bash core/scripts/plugins.sh --install google-drive-sync     # the command in ea
 bash core/scripts/plugins.sh --configure google-drive-sync   # core/config/plugin.google-drive-sync.settings.yml
 ```
 
+## What it goes with
+
+The Drive button and `cmd-tools-google-drive-sync.sh` are for the folders `videos`, `audio`, `docs`, `specs`, `test` (or the ones named in `plugins.google-drive-sync.workspaces`). On a workspace that has none of them there is nothing to sync yet, so the manifest suggests one (`suggests`: the plugins `video`, `audio`, `docs`, `specs`, `test`): `--require` and `--list` say whether the workspace has one, and nothing is added for you.
+
 ## What the package holds
 
 | Path | What it is |
