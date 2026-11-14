@@ -28,6 +28,15 @@
   "workspacePlugin": {
     "name": "google-drive-sync",
     "label": "Google Drive",
+    "suggests": [
+      [
+        "video",
+        "audio",
+        "docs",
+        "specs",
+        "test"
+      ]
+    ],
     "settingsFile": "plugin.google-drive-sync.settings.yml",
     "settingsTemplate": "config/plugin.google-drive-sync.settings.yml",
     "legacySettingsKey": "google_drive",
