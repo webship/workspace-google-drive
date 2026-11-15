@@ -10,6 +10,12 @@
  * line cannot disagree, and it asks before overwriting anything already on Drive.
  */
 
+/** The AI items the installer places: agents in ai-agents/, skills in ai-skills/, commands in ai-commands/, prompts in ai-prompts/. */
+export const AGENTS: string[] = ['google-drive-pusher'];
+export const SKILLS: string[] = ['google-drive-push'];
+export const AI_COMMANDS: string[] = ['google-drive-preview'];
+export const PROMPTS: string[] = ['google-drive-push-folder'];
+
 export {};
 module.exports.register = (api) => {
   const fs = require('fs');
