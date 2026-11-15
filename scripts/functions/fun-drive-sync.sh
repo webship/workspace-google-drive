@@ -41,7 +41,9 @@ USAGE
 }
 
 function drive_mcp_register() {
-  local server="${WORKSPACE_ROOT}/core/workspace-app/plugins/google-drive-sync/lib/mcp.js" ;
+  # The server ships in the package, beside cli.js: the same place drive_node runs from.
+  local server="${WORKSPACE_ROOT}/core/workspace-app/node_modules/@webship.co/workspace-google-drive/dist/src/lib/mcp.js" ;
+  [ -f "${server}" ] || { echo "The Google Drive plugin is not installed: bash core/scripts/plugins.sh --require github:webship/workspace-google-drive" >&2 ; return 1 ; }
   command -v claude > /dev/null 2>&1 || { echo "The claude CLI is not installed here." >&2 ; return 1 ; }
   # Prove the server starts and answers before registering it: a failure here is a sentence, and the
   # same failure afterwards is only "Connection closed" in some later session. It exits on EOF.
@@ -49,7 +51,8 @@ function drive_mcp_register() {
     echo "The Google Drive MCP server will not start. Run it by hand to see why: node ${server}" >&2 ;
     return 1 ;
   fi
-  claude mcp add --scope user --env "WORKSPACE_ROOT=${WORKSPACE_ROOT}" --env "WORKSPACE_CONFIG=${WORKSPACE_CONFIG}" "${DRIVE_MCP_NAME}" -- node "${server}" || return 1 ;
+  # The name first: --env takes every word after it up to the next option, and would take the name too.
+  claude mcp add --scope user "${DRIVE_MCP_NAME}" --env "WORKSPACE_ROOT=${WORKSPACE_ROOT}" --env "WORKSPACE_CONFIG=${WORKSPACE_CONFIG}" -- node "${server}" || return 1 ;
   echo "" ;
   echo "Registered ${DRIVE_MCP_NAME} with the Claude Code CLI (stdio, no port, no secret in the registration)." ;
   echo "  Open a NEW session for its tools: drive_status, drive_list_folders, drive_create_folder," ;
