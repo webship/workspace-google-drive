@@ -1,7 +1,7 @@
 {
   "name": "@webship.co/workspace-google-drive",
   "version": "1.0.8",
-  "description": "Google Drive for Webship Workspace: a Sync to Drive button on the videos, audio, docs, specs and test workspaces, the command line behind it, a Google Drive MCP server for Claude Code, and the plugin's own settings file.",
+  "description": "Google Drive for Webship Workspace: a Sync to Drive button on the videos, audio, docs, specs and test workspaces, the command line behind it, a Google Drive MCP server for Claude Code, and the plugin's own settings file. It carries its AI items, each placed in the workspace folder of its kind: an agent, a skill, a command and a prompt.",
   "main": "dist/src/index.js",
   "license": "ISC",
   "repository": {
@@ -13,11 +13,13 @@
   },
   "files": [
     "dist/src",
+    "ai",
     "commands",
     "config",
     "features",
     "scripts",
-    "README.md"
+    "README.md",
+    "docs"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
@@ -28,6 +30,12 @@
   "workspacePlugin": {
     "name": "google-drive-sync",
     "label": "Google Drive",
+    "needs": [
+      "ai-agents",
+      "ai-skills",
+      "ai-commands",
+      "ai-prompts"
+    ],
     "suggests": [
       [
         "video",
@@ -56,6 +64,20 @@
     "scripts": {
       "functions": [
         "scripts/functions/fun-drive-sync.sh"
+      ]
+    },
+    "ai": {
+      "agents": [
+        "ai/agents/google-drive-pusher.md"
+      ],
+      "skills": [
+        "ai/skills/google-drive-push"
+      ],
+      "commands": [
+        "ai/commands/google-drive-preview.md"
+      ],
+      "prompts": [
+        "ai/prompts/google-drive-push-folder.md"
       ]
     },
     "features": [

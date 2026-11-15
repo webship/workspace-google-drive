@@ -11,8 +11,9 @@ import path from 'path';
 const PKG = fs.existsSync(path.join(__dirname, '..', 'package.json')) ? path.join(__dirname, '..') : path.join(__dirname, '..', '..');
 const manifest = JSON.parse(fs.readFileSync(path.join(PKG, 'package.json'), 'utf8')).workspacePlugin;
 
-test("the manifest says what the plugin goes with, and needs nothing", () => {
-  assert.deepStrictEqual(manifest.needs, undefined);
+test("the manifest says what the plugin goes with, and what it needs", () => {
+  assert.deepStrictEqual(manifest.needs, ['ai-agents', 'ai-skills', 'ai-commands', 'ai-prompts']);
+  for (const kind of Object.keys(manifest.ai)) assert.ok(manifest.ai[kind].length > 0, `it ships ${kind}, which is why it needs the folder they are placed in`);
   assert.deepStrictEqual(manifest.suggests, [['video', 'audio', 'docs', 'specs', 'test']]);
   // The command goes to folder keys; a suggestion names plugins, and the videos folder is the plugin "video".
   assert.deepStrictEqual(manifest.suggests[0].map((n: string) => (n === 'video' ? 'videos' : n)), manifest.commands.workspaces);
