@@ -15,6 +15,8 @@ export const AGENTS: string[] = ['google-drive-pusher'];
 export const SKILLS: string[] = ['google-drive-push'];
 export const AI_COMMANDS: string[] = ['google-drive-preview'];
 export const PROMPTS: string[] = ['google-drive-push-folder'];
+/** The workspaces the plugin is for when settings.yml gives it no list: the ones its manifest places its command in. */
+export const DRIVE_WORKSPACES: string[] = ['videos', 'audio', 'docs', 'specs', 'test'];
 
 export {};
 module.exports.register = (api) => {
@@ -41,11 +43,10 @@ module.exports.register = (api) => {
   // The workspaces this plugin is for: the list settings.yml gives it (plugins.google-drive-sync.workspaces), else
   // the ones its manifest places its command in (videos, audio, docs, specs, test). An install from npm writes no
   // list, and api.appliesTo alone then says yes to every workspace: the group was on dev and projects too.
-  const manifestScope: string[] = (() => {
-    try { return require('../../package.json').workspacePlugin.commands.workspaces || []; } catch (_) { return []; }
-  })();
+  // DRIVE_WORKSPACES is the manifest's commands.workspaces (tests/scope.test.ts holds the two equal); it is written
+  // here rather than read from package.json, so the plugin reaches nothing outside its own source.
   const listed = String((api.config && api.config.workspaces) || '').split(',').map((w) => w.trim()).filter(Boolean);
-  const inScope = (ws) => (listed.length ? api.appliesTo(ws) : manifestScope.includes(ws));
+  const inScope = (ws) => (listed.length ? api.appliesTo(ws) : DRIVE_WORKSPACES.includes(ws));
   const wsOk = (ws) => isValidWorkspace(ws) && inScope(ws);
   const vals = (o) => esc(JSON.stringify(o));
   const BODY = '#drive-sync-body';

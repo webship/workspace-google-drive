@@ -51,6 +51,7 @@ function load(workspaces?: string) {
 }
 
 test('with no list in settings.yml, the group is on the workspaces the manifest places the command in, and on no other', () => {
+  assert.deepStrictEqual([...require('../src/index').DRIVE_WORKSPACES].sort(), [...manifest.commands.workspaces].sort(), 'the plugin\'s list is the manifest\'s');
   const { groups } = load();
   const shown = ALL.filter((w) => groups(w).some((g) => g.label === 'Google Drive')).sort();
   assert.deepStrictEqual(shown, [...manifest.commands.workspaces].sort());
