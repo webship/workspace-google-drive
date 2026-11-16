@@ -1,6 +1,7 @@
-// @ts-nocheck — the dashboard-side tests of this plugin, ported from the dashboard tree on 2026-11-07.
-// They need a Webship Workspace checkout (its plugin-loader): WORKSPACE_APP names core/workspace-app, or the
-// nearest ancestor that has one is used; without one they are skipped, so the package's own CI stays green.
+// @ts-nocheck — the dashboard-side tests of this plugin: it is loaded by a real dashboard's plugin-loader and its
+// actions are called the way the dashboard calls them. They need a Webship Workspace checkout: WORKSPACE_APP names
+// its core/workspace-app (CI checks out webship/workspace for it), or the nearest ancestor that has one is used.
+// Without one they are skipped, with that reason; CI always has one, so they always run there.
 const path0 = require('path'); const fs0 = require('fs');
 function findApp(): string | null {
   if (process.env.WORKSPACE_APP) return process.env.WORKSPACE_APP;
@@ -12,20 +13,38 @@ const APP = findApp();
 /**
  * The Google Drive sync plugin: where its button appears, what it saves, and what it refuses.
  *
- * Runs against a copy of the shipped config, so the settings the plugin writes back never touch a
- * real settings.yml. Nothing here talks to Google.
+ * Runs in a workspace made for the test: a copy of the dashboard's config with the folders this needs, and this
+ * plugin on, loaded from this package (the dashboard resolves an absolute module path) with its own settings file
+ * from the template. So the settings the plugin writes back never touch a real settings.yml, and the result does
+ * not depend on what the checkout's own settings.yml happens to list. Nothing here talks to Google.
  */
 
 const assert = require('node:assert');
 const { test: realTest } = require('node:test');
 const test = (name, fn) => realTest(name, { skip: APP ? false : 'no dashboard checkout (set WORKSPACE_APP)' }, fn);
+// In CI a missing checkout is a failure, not a skip: these tests were skipped in every run for months unseen.
+if (!APP && process.env.CI) realTest('CI gives these tests a dashboard checkout', () => assert.fail('WORKSPACE_APP is not set: the dashboard tests would be skipped'));
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
+const yaml = require('js-yaml');
 
-const CONFIG = fs.mkdtempSync(path.join(os.tmpdir(), 'ws-drive-plugin-'));
-if (APP) fs.cpSync(path.join(APP, '..', 'config'), CONFIG, { recursive: true });
+const PKG = fs.existsSync(path.join(__dirname, '..', 'package.json')) ? path.join(__dirname, '..') : path.join(__dirname, '..', '..');
+const ROOT = fs.mkdtempSync(path.join(os.tmpdir(), 'ws-drive-plugin-'));
+const CONFIG = path.join(ROOT, 'core', 'config');
+const WORKSPACES = ['videos', 'audio', 'docs', 'specs', 'test', 'dev', 'projects'];
+if (APP) {
+  fs.cpSync(path.join(APP, '..', 'config'), CONFIG, { recursive: true });
+  const settings = yaml.load(fs.readFileSync(path.join(CONFIG, 'settings.yml'), 'utf8')) || {};
+  settings.workspaces = WORKSPACES;
+  settings.plugins = { 'google-drive-sync': { enabled: true, module: PKG } };
+  fs.writeFileSync(path.join(CONFIG, 'settings.yml'), yaml.dump(settings));
+  fs.copyFileSync(path.join(PKG, 'config', 'plugin.google-drive-sync.settings.yml'), path.join(CONFIG, 'plugin.google-drive-sync.settings.yml'));
+  for (const w of WORKSPACES) fs.mkdirSync(path.join(ROOT, w), { recursive: true });
+}
+process.env.WORKSPACE_ROOT = ROOT;
 process.env.WORKSPACE_CONFIG = CONFIG;
+process.on('exit', () => fs.rmSync(ROOT, { recursive: true, force: true }));
 
 const { pluginActions, pluginFragment, pluginPageActionGroups, loadedPlugins } = APP ? require(APP + '/plugin-loader') : ({} as any);
 const { loadWorkspaces } = APP ? require(APP + '/workspaces') : ({} as any);
@@ -55,11 +74,11 @@ test('the plugin has its own settings file with every key, and settings.yml no l
   assert.doesNotMatch(fs.readFileSync(path.join(CONFIG, 'settings.yml'), 'utf8'), /^google_drive:/m, 'the block left settings.yml');
 });
 
-test('the plugin loads as a node module, with a folder only as the fallback', () => {
+test('the plugin loads as a node module: the package, by its main file', () => {
   const entry = loadedPlugins.find((p) => p.name === 'google-drive-sync');
-  assert.match(entry.source, /^module:@webship\.co\/workspace-google-drive$/, `loaded as ${entry.source}`);
-  assert.match(require(APP + '/package.json').dependencies['@webship.co/workspace-google-drive'], /^github:webship\/workspace-google-drive/);
-  const manifest = require('../../package.json');
+  assert.strictEqual(entry.source, `module:${PKG}`, `loaded as ${entry.source}`);
+  const manifest = require(path.join(PKG, 'package.json'));
+  assert.strictEqual(manifest.name, '@webship.co/workspace-google-drive');
   assert.strictEqual(manifest.main, 'dist/src/index.js');
   assert.strictEqual(manifest.workspacePlugin.settingsFile, PLUGIN_FILE);
 });
