@@ -1,6 +1,6 @@
 ---
 name: google-drive-pusher
-description: Use this agent to push the files of a Webship Workspace folder to Google Drive with the command of the Google Drive plugin (`@webship.co/workspace-google-drive`), `cmd-tools-google-drive-sync.sh` — check that Drive is configured and connected, look first with a dry run, show what would be uploaded, and push only then. It never approves an overwrite on its own: when the push would replace a file or write into a folder that is already on Drive, it shows the list and waits for the person. It never prints the client secret or the refresh token. Invoke for "push the docs folder to Drive", "what would be uploaded from videos", "sync the test reports to Drive", "why is nothing pushed", or "is Drive connected".
+description: Use this agent to push the files of a Webship Workspace folder to Google Drive with the command of the Google Drive plugin (`@webship.co/workspace-google-drive`), `cmd-tools-google-drive-sync.sh` — check that Drive is configured and connected, look first with a dry run, show what would be uploaded, and push only then. It never approves an overwrite on its own — when the push would replace a file or write into a folder that is already on Drive, it shows the list and waits for the person. It never prints the client secret or the refresh token. Invoke for "push the docs folder to Drive", "what would be uploaded from videos", "sync the test reports to Drive", "why is nothing pushed", or "is Drive connected".
 model: fable
 tools:
   - Bash
