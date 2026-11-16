@@ -38,7 +38,15 @@ module.exports.register = (api) => {
   const base = `/fragments/p/${api.name}`;
   const post = (name) => `/actions/p/${api.name}/${name}`;
   const saveSetting = (dotted, value) => api.settings.set(dotted, value);
-  const wsOk = (ws) => isValidWorkspace(ws) && api.appliesTo(ws);
+  // The workspaces this plugin is for: the list settings.yml gives it (plugins.google-drive-sync.workspaces), else
+  // the ones its manifest places its command in (videos, audio, docs, specs, test). An install from npm writes no
+  // list, and api.appliesTo alone then says yes to every workspace: the group was on dev and projects too.
+  const manifestScope: string[] = (() => {
+    try { return require('../../package.json').workspacePlugin.commands.workspaces || []; } catch (_) { return []; }
+  })();
+  const listed = String((api.config && api.config.workspaces) || '').split(',').map((w) => w.trim()).filter(Boolean);
+  const inScope = (ws) => (listed.length ? api.appliesTo(ws) : manifestScope.includes(ws));
+  const wsOk = (ws) => isValidWorkspace(ws) && inScope(ws);
   const vals = (o) => esc(JSON.stringify(o));
   const BODY = '#drive-sync-body';
   const MODAL = '#editor-modal-body';
@@ -47,7 +55,7 @@ module.exports.register = (api) => {
   // ---- Rail button -----------------------------------------------------------------------
 
   api.addPageActions(({ view, key, meta }) => {
-    if (view !== 'workspace' || !key || !api.appliesTo(key)) return null;
+    if (view !== 'workspace' || !key || !inScope(key)) return null;
     return {
       label: 'Google Drive',
       items: [
