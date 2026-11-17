@@ -157,9 +157,11 @@ async function exchangeCode(code) {
 
 let cached = { token: '', until: 0, key: '' };
 
+const NOT_CONNECTED = 'Google Drive is not connected. Set client_id and client_secret in plugin.google-drive-sync.settings.yml (or paste them into the Sync panel), then press Connect in the dashboard.';
+
 async function accessToken() {
   const s = driveSettings();
-  if (!s.connected) throw new Error('Google Drive is not connected. Set client_id and client_secret in plugin.google-drive-sync.settings.yml (or paste them into the Sync panel), then press Connect in the dashboard.');
+  if (!s.connected) throw new Error(NOT_CONNECTED);
   const key = `${s.clientId}:${s.refreshToken}`;
   if (cached.key === key && Date.now() < cached.until) return cached.token;
   const body = await tokenRequest({
@@ -577,6 +579,9 @@ function sourcesFor(workspace, { folderId = '', item = '' } = {}) {
 
 /** Compare a workspace with its Drive folder. Writes nothing. */
 async function planWorkspace(workspace, opts = {}) {
+  // The connection first: a folder is chosen in the Sync panel once Drive is connected, and the plan reads Drive
+  // anyway, so "No Drive folder chosen" was the wrong first step for somebody who has not set Drive up (#31).
+  if (!driveSettings().connected) throw new Error(NOT_CONNECTED);
   const { dest, sources, empty } = sourcesFor(workspace, opts);
   const settings = driveSettings();
   const plan = await planSources(dest, sources, { exclude: settings.exclude, scan: settings.scanForSecrets, log: opts.log });

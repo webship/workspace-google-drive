@@ -287,6 +287,17 @@ test('it says what is missing instead of failing in the middle', async () => {
     assert.match(unknown.out, /Unknown workspace/);
     const placeholder = await run(['status'], { ...env, WORKSPACE_CONFIG: (() => { const d = path.join(root, 'cfg3'); fs.cpSync(env.WORKSPACE_CONFIG, d, { recursive: true }); fs.writeFileSync(path.join(d, PLUGIN_FILE), fs.readFileSync(path.join(d, PLUGIN_FILE), 'utf8').replace('client_id: cid', 'client_id: CHANGE_ME')); return d; })() });
     assert.match(placeholder.out, /MISSING/);
+    // Not set up at all (no client, no connection, no folder): the first thing said is the connection (#31).
+    const fresh = path.join(root, 'cfg4');
+    fs.cpSync(env.WORKSPACE_CONFIG, fresh, { recursive: true });
+    fs.writeFileSync(path.join(fresh, PLUGIN_FILE), fs.readFileSync(path.join(fresh, PLUGIN_FILE), 'utf8')
+      .replace('client_id: cid', 'client_id: CHANGE_ME').replace(/^refresh_token: .*$/m, 'refresh_token: ""').replace('docs: DESTFOLDER01', 'docs: ""'));
+    for (const args of [['sync', 'docs'], ['sync', 'docs', '--dry-run']]) {
+      const notSetUp = await run(args, { ...env, WORKSPACE_CONFIG: fresh });
+      assert.strictEqual(notSetUp.code, 1, args.join(' '));
+      assert.match(notSetUp.out, /Google Drive is not connected\. Set client_id and client_secret/, args.join(' '));
+      assert.doesNotMatch(notSetUp.out, /No Drive folder chosen/, args.join(' '));
+    }
   } finally { g.server.close(); }
 });
 
