@@ -1,0 +1,52 @@
+# Labels for core/config/plugin.google-drive-sync.settings.yml, shown on the plugin's Settings page.
+client_id:
+  label: OAuth client id
+  info: The client id of an OAuth client of type "Web application" in Google Cloud Console (APIs & Services → Credentials), in a project with the Drive API enabled. Then press Connect on a Sync panel.
+client_secret:
+  label: OAuth client secret
+  info: The secret of that OAuth client. Never sent back to this page once saved.
+refresh_token:
+  label: Refresh token
+  info: Written here by the dashboard when you press Connect on a Sync panel; leave it empty. Disconnect empties it.
+account:
+  label: Google account
+  info: Your Google address. Pre-selected in Google's account chooser when you connect, and the panel warns when Drive is connected as somebody else.
+scope:
+  label: Drive access
+  info: The access Connect asks Google for. Full Drive access is what pushing into a folder you already have needs; the narrower drive.file only sees files this app created.
+redirect_uri:
+  label: Redirect address
+  info: Where Google sends you back after Connect, and an address the OAuth client must list. Empty means https://<hub_domain>/fragments/p/google-drive-sync/callback.
+locations:
+  label: Where the folder picker looks
+  info: my_drive, shared_with_me, shared_drives (a Google Workspace shared drive), and the views starred and recent. My Drive alone is the default.
+root_folder:
+  label: Folder on Drive for every workspace
+  info: Each workspace stores into <this folder>/<workspace>. Chosen from the Sync panel; an id or a link. Empty until chosen.
+destinations.videos:
+  label: Folder for the videos workspace
+  info: A Drive folder of its own, instead of <folder for every workspace>/videos. An id or a link, chosen from the Sync panel.
+destinations.audio:
+  label: Folder for the audio workspace
+  info: A Drive folder of its own, instead of <folder for every workspace>/audio. An id or a link, chosen from the Sync panel.
+destinations.docs:
+  label: Folder for the docs workspace
+  info: A Drive folder of its own, instead of <folder for every workspace>/docs. An id or a link, chosen from the Sync panel.
+destinations.specs:
+  label: Folder for the specs workspace
+  info: A Drive folder of its own, instead of <folder for every workspace>/specs. An id or a link, chosen from the Sync panel.
+destinations.test:
+  label: Folder for the test workspace
+  info: A Drive folder of its own, instead of <folder for every workspace>/test. An id or a link, chosen from the Sync panel.
+sources.test:
+  label: What the test workspace pushes
+  info: test-reports pushes each project's report, failure screenshots and recordings, not the projects themselves. Empty pushes the whole folder like the others.
+targets:
+  label: What each workspace pushes
+  info: Only files that match a target are pushed, and a workspace with no targets pushes nothing. Choose them in each workspace's Sync panel.
+exclude:
+  label: Never pushed
+  info: Names or paths never pushed, on top of the built-in list (cmd-*.sh, the workspace's own AGENTS.md, CLAUDE.md and README.md, and files that hold passwords or keys).
+scan_for_secrets:
+  label: Look inside small text files for secrets
+  info: On unless set to false. A small text file that gives away a private key, a known token or a password value is skipped and named in the output.

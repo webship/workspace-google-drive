@@ -47,6 +47,7 @@
     ],
     "settingsFile": "plugin.google-drive-sync.settings.yml",
     "settingsTemplate": "config/plugin.google-drive-sync.settings.yml",
+    "labels": "config/settings.labels.yml",
     "legacySettingsKey": "google_drive",
     "workspaces": "videos,audio,docs,specs,test",
     "commands": {
